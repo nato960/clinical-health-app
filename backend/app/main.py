@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.api.doctor import router as doctor_router
-from backend.app.core.exceptions import AppException
+from app.core.exceptions import AppException
 from sqlalchemy.exc import SQLAlchemyError
 
 app = FastAPI(title="Clinial Health API")

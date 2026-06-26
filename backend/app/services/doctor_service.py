@@ -4,7 +4,7 @@ from app.models.address import Address
 from app.models.doctor import Doctor
 from app.repositories.doctor_repository import DoctorRepository, get_doctor_repository
 from app.schemas.doctor_schema import DoctorCreate, DoctorPatch
-from backend.app.core.exceptions import ConflictException, NotFoundException
+from app.core.exceptions import ConflictException, NotFoundException
 
 
 class DoctorService:
