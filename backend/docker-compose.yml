@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    container_name: clinical_health_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: clinical_health_api_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -1,0 +1,38 @@
+# Ambiente virtual
+.venv/
+venv/
+
+# Variáveis de ambiente (sensível)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Mypy
+.mypy_cache/
+
+# Alembic (gerado automaticamente, não é necessário versionar)
+# alembic/versions/   ← descomente se preferir não versionar as migrations
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+
+# Temporários de desenvolvimento
+temp/
+
+# OS
+.DS_Store
+Thumbs.db
