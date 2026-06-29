@@ -56,9 +56,6 @@ class DoctorService:
         if data.email and data.email != doctor.email:
             await self.assert_unique_email(data.email)
         
-        if data.crm and data.crm != doctor.crm:
-            await self.assert_unique_crm(data.crm)
-        
         return await self.repo.patch(doctor, data)
     
     async def deactivate(self, doctor_id: int) -> None:

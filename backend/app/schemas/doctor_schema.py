@@ -11,7 +11,7 @@ class DoctorCreate(BaseModel):
     email: str
     crm: str
     birth_date: Optional[date] = None
-    phone: Optional[str]
+    phone: str
     speciality: Speciality
     address: Optional[AddressSchema] = None
 
