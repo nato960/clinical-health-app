@@ -1,14 +1,14 @@
 from typing import Generic, List, Optional, TypeVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 T = TypeVar("T")
 
 class AddressSchema(BaseModel):
-    street: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    zip_code: Optional[str] = None
+    street: Optional[str] = Field(None, max_length=200)
+    city: Optional[str] = Field(None, max_length=100)
+    state: Optional[str] = Field(None, min_length=2, max_length=2)
+    zip_code: Optional[str] = Field(None, pattern=r"^\d{5}-?\d{3}$")
 
     model_config = {'from_attributes': True}
 

@@ -41,7 +41,7 @@ class DoctorRepository:
     
     async def count(
             self,
-            search: str,
+            search: Optional[str],
             speciality: Optional[Speciality]
     ) -> int:
         
