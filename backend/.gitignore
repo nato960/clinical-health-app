@@ -35,6 +35,7 @@ htmlcov/
 
 # Temporários de desenvolvimento
 temp/
+benchmark/
 
 # OS
 .DS_Store

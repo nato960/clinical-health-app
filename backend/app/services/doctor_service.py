@@ -1,3 +1,6 @@
+import math
+from typing import Optional
+
 from fastapi import Depends
 
 from app.models.address import Address
@@ -5,7 +8,10 @@ from app.models.doctor import Doctor
 from app.repositories.doctor_repository import DoctorRepository, get_doctor_repository
 from app.schemas.doctor_schema import DoctorCreate, DoctorPatch
 from app.core.exceptions import ConflictException, NotFoundException
+from app.models.enums import Speciality
+from app.schemas.shared import PaginatedResponse
 
+DOCTORS_LIST_MAX_LIMIT = 100
 
 class DoctorService:
 
@@ -26,8 +32,34 @@ class DoctorService:
             raise NotFoundException("Doctor not found.")
         return doctor
     
-    async def list_doctors(self) -> list[Doctor]:
-        return await self.repo.get_all()
+    async def list_doctors(
+            self,
+            page: int,
+            size: Optional[int],
+            search: Optional[str],
+            speciality: Optional[Speciality]
+    ) -> PaginatedResponse:
+        
+        effective_size = size if size is not None else DOCTORS_LIST_MAX_LIMIT
+        offset = (page - 1) * effective_size
+
+        total = await self.repo.count(search=search, speciality=speciality)
+        doctors = await self.repo.get_all(
+            offset=offset,
+            limit=effective_size,
+            search=search,
+            speciality=speciality
+        )
+
+        return PaginatedResponse(
+            items=doctors,
+            total=total,
+            page=page,
+            size=effective_size,
+            pages=math.ceil(total / effective_size) if total else 0,
+            has_next=page * effective_size < total,
+            has_prev=page > 1
+        )
 
     async def create(self, data: DoctorCreate) -> Doctor:
 
