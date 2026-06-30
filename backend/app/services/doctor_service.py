@@ -1,3 +1,4 @@
+import logging
 import math
 from typing import Optional
 
@@ -11,6 +12,8 @@ from app.core.exceptions import ConflictException, NotFoundException
 from app.models.enums import Speciality
 from app.schemas.shared import PaginatedResponse
 
+logger = logging.getLogger(__name__)
+
 DOCTORS_LIST_MAX_LIMIT = 100
 
 class DoctorService:
@@ -20,10 +23,12 @@ class DoctorService:
 
     async def assert_unique_email(self, doctor_email: str):
         if await self.repo.get_by_email(doctor_email):
+            logger.warning("Conflict: Email '%s' already registered", doctor_email)
             raise ConflictException("E-mail already exists.")
         
     async def assert_unique_crm(self, doctor_crm: str):
         if await self.repo.get_by_crm(doctor_crm):
+            logger.warning("Conflict: CRM '%s' already registered", doctor_crm)
             raise ConflictException("CRM already exists.")
         
     async def get_by_id(self, doctor_id: int) -> Doctor:
@@ -79,7 +84,11 @@ class DoctorService:
             address=address
         )
 
-        return await self.repo.save(doctor)
+        saved = await self.repo.save(doctor)
+
+        logger.info("Doctor created id=%s name=%s", saved.id, saved.name)
+
+        return saved
     
     async def patch(self, doctor_id: int, data: DoctorPatch) -> Doctor:
 
@@ -98,6 +107,7 @@ class DoctorService:
             raise ConflictException("Doctor already inactive")
         
         await self.repo.deactivate(doctor)
+        logger.info("Doctor soft-deleted id=%s", doctor.id)
 
 def get_doctor_service(repo: DoctorRepository = Depends(get_doctor_repository)) -> DoctorService:
     return DoctorService(repo=repo)
