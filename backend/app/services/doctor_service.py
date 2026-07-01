@@ -40,9 +40,9 @@ class DoctorService:
     async def list_doctors(
             self,
             page: int,
-            size: Optional[int],
-            search: Optional[str],
-            speciality: Optional[Speciality]
+            size: Optional[int] = None,
+            search: Optional[str] = None,
+            speciality: Optional[Speciality] = None
     ) -> PaginatedResponse:
         
         effective_size = size if size is not None else DOCTORS_LIST_MAX_LIMIT
