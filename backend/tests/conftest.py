@@ -1,7 +1,7 @@
 from httpx import ASGITransport, AsyncClient
 import pytest
 import pytest_asyncio
-from sqlalchemy import NullPool
+from sqlalchemy import NullPool, event
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
 
@@ -33,11 +33,21 @@ async def db_session(engine):
     """
     conn = await engine.connect()
     trans = await conn.begin()
+    nested = await conn.begin_nested()
+
     session = AsyncSession(bind=conn, expire_on_commit=False)
+
+    @event.listens_for(session.sync_session, "after_transaction_end")
+    def restart_savepoint(sess, transaction):
+        nonlocal nested
+        if not nested.is_active:
+            nested = conn.sync_connection.begin_nested()
+
     yield session
     await session.close()
     await trans.rollback()
     await conn.close()
+
 
 @pytest_asyncio.fixture()
 async def client(db_session):
