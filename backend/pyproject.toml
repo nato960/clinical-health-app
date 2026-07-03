@@ -25,3 +25,9 @@ include = ["app*"]
 [tool.pyright]
 include = ["app"]
 pythonVersion = "3.11"
+
+[tool.pytest.ini_options]
+asyncio_mode= "auto"
+markers = [
+    "integration: tests that require a running PostgreSQL database"
+]
