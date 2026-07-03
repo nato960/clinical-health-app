@@ -1,6 +1,5 @@
-
 class AppException(Exception):
-    """Base para todas as exceções da aplicação"""
+    """Base for all exception in the application"""
 
     def __init__(self, status_code: int, message: str):
         self.status_code = status_code
