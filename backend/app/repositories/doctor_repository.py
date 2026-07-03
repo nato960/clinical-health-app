@@ -59,14 +59,19 @@ class DoctorRepository:
 
         return await self.db.scalar(query)
 
-    async def get_by_id(self, doctor_id: int) -> Doctor:
+    async def get_by_id(self, doctor_id: int, active_only: bool = True) -> Doctor:
 
-        query = await self.db.execute(
+        query = (
             select(Doctor)
             .where(Doctor.id == doctor_id)
         )
 
-        return query.scalar_one_or_none()
+        if active_only:
+            query = query.where(Doctor.is_active == True)
+
+        result = await self.db.execute(query)
+
+        return result.scalar_one_or_none()
     
     async def get_by_email(self, email: str) -> Doctor | None:
         

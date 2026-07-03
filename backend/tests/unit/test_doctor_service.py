@@ -113,6 +113,13 @@ async def test_patch_skips_unique_email_when_email_same():
     service.repo.get_by_email.assert_not_called()
 
 
+async def test_patch_fetches_doctor_including_inactive():
+    service = make_service()
+    doctor = make_doctor()
+    service.repo.get_by_id = AsyncMock(return_value=doctor)
+    await service.patch(1, DoctorPatch(name="Novo Nome"))
+    service.repo.get_by_id.assert_called_once_with(1, True)
+
 
 # --- list_doctors: cálculo de paginação ---
 
@@ -158,3 +165,11 @@ async def test_deactivate_already_inactive_raises():
     service.repo.get_by_id = AsyncMock(return_value=doctor)
     with pytest.raises(ConflictException):
         await service.deactivate(1)
+
+
+async def test_deactivate_fetches_doctor_ignoring_active_only():
+    service = make_service()
+    doctor = make_doctor(is_active=True)
+    service.repo.get_by_id = AsyncMock(return_value=doctor)
+    await service.deactivate(1)
+    service.repo.get_by_id.assert_called_once_with(1, False)

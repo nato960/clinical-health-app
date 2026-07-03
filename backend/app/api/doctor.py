@@ -35,8 +35,9 @@ async def create_doctor(
 @router.get("/{doctor_id}", response_model=DoctorResponse)
 async def get_doctor_by_id(
     doctor_id: int,
+    active_only: bool = Query(default=True),
     service: DoctorService = Depends(get_doctor_service)):
-    doctor = await service.get_by_id(doctor_id)
+    doctor = await service.get_by_id(doctor_id, active_only)
     return doctor
 
 @router.patch("/{doctor_id}", response_model=DoctorResponse)

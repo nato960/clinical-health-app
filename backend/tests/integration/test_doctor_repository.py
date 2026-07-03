@@ -72,5 +72,5 @@ async def test_deactivate_sets_is_active_false(db_session):
     repo = DoctorRepository(db_session)
     doctor = await repo.save(Doctor(**make_doctor_data()))
     await repo.deactivate(doctor)
-    found = await repo.get_by_id(doctor.id)
+    found = await repo.get_by_id(doctor.id, active_only=False)
     assert found.is_active is False

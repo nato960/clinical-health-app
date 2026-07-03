@@ -2,6 +2,7 @@ import logging
 import sys
 
 from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.api.doctor import router as doctor_router
@@ -34,7 +35,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     logger.warning("Validation error on %s: %s", request.url.path, exc.errors())
     return JSONResponse(
         status_code=422,
-        content={"error": "Invalid data", "detail": exc.errors()}
+        content=jsonable_encoder({"error": "Invalid data", "detail": exc.errors()})
     )
 
 @app.exception_handler(SQLAlchemyError)

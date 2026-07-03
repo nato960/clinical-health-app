@@ -31,8 +31,8 @@ class DoctorService:
             logger.warning("Conflict: CRM '%s' already registered", doctor_crm)
             raise ConflictException("CRM already exists.")
         
-    async def get_by_id(self, doctor_id: int) -> Doctor:
-        doctor = await self.repo.get_by_id(doctor_id)
+    async def get_by_id(self, doctor_id: int, active_only: bool = True) -> Doctor:
+        doctor = await self.repo.get_by_id(doctor_id, active_only)
         if not doctor:
             raise NotFoundException("Doctor not found.")
         return doctor
@@ -101,7 +101,7 @@ class DoctorService:
     
     async def deactivate(self, doctor_id: int) -> None:
 
-        doctor = await self.get_by_id(doctor_id)
+        doctor = await self.get_by_id(doctor_id, active_only=False)
         
         if not doctor.is_active:
             raise ConflictException("Doctor already inactive")
