@@ -7,6 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.api.doctor import router as doctor_router
 from app.api.health import router as health_router
+from app.api.patient import router as patient_router
 from app.core.exceptions import AppException
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -27,6 +28,7 @@ app = FastAPI(
 
 app.include_router(health_router)
 app.include_router(doctor_router, prefix="/api")
+app.include_router(patient_router, prefix="/api")
 
 @app.exception_handler(AppException)
 async def app_exception_handler(request: Request, exc: AppException):

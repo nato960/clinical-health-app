@@ -58,6 +58,8 @@ API Router (app/api/)
 - **Repositories** — all SQLAlchemy queries via `AsyncSession`
 - **Models** — ORM mappings
 
+One exception to the 4-layer flow: `app/api/health.py` exposes `GET /healthcheck` → `{"status": "ok"}` (tag `"System"`), registered in `main.py` without the `/api` prefix used by every other router.
+
 ### Async patterns
 
 - All route handlers are `async def`.
@@ -77,7 +79,7 @@ Custom exception hierarchy in `app/core/exceptions.py`:
 
 - `AppException` — base
 - `NotFoundException` → 404
-- `ConflictException` → 409 (duplicate email or CRM)
+- `ConflictException` → 409 (duplicate email, CRM, or CPF)
 - `BusinessException` → 400
 
 Global FastAPI exception handlers in `main.py` convert these to consistent JSON error responses.
@@ -91,10 +93,10 @@ Global FastAPI exception handlers in `main.py` convert these to consistent JSON 
 
 ### Shared patterns
 
-- **Pagination**: use `PaginatedResponse` from `app/schemas/shared.py`; max page size enforced by `DOCTORS_LIST_MAX_LIMIT = 100`.
-- **Soft deletes**: set `is_active = False` instead of hard-deleting rows. `DoctorRepository.get_by_id` excludes inactive rows by default (`active_only: bool = True`) — pass `active_only=False` to fetch a deactivated doctor.
+- **Pagination**: use `PaginatedResponse` from `app/schemas/shared.py`; max page size enforced per-entity by a `<ENTITY>_LIST_MAX_LIMIT = 100` constant in that entity's service (e.g. `DOCTORS_LIST_MAX_LIMIT`, `PATIENTS_LIST_MAX_LIMIT`).
+- **Soft deletes**: set `is_active = False` instead of hard-deleting rows. Each repository's `get_by_id` excludes inactive rows by default (`active_only: bool = True`) — pass `active_only=False` to fetch a deactivated row.
 - **Timestamps**: `created_at` / `updated_at` use `server_default` — do not set manually.
-- **Address**: optional FK on Doctor, loaded via `lazy="selectin"`, embedded in Doctor responses.
+- **Address**: optional FK shared by Doctor and Patient, loaded via `lazy="selectin"`, embedded in their responses.
 
 ## Tech Stack
 
