@@ -6,6 +6,8 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.api.doctor import router as doctor_router
+from app.api.health import router as health_router
+from app.api.patient import router as patient_router
 from app.core.exceptions import AppException
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -18,9 +20,15 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Clinial Health API")
+app = FastAPI(
+    title="Clinical Health API",
+    description="REST API for managing clinical staff records (doctors and their addresses).",
+    version="0.1.0",
+)
 
+app.include_router(health_router)
 app.include_router(doctor_router, prefix="/api")
+app.include_router(patient_router, prefix="/api")
 
 @app.exception_handler(AppException)
 async def app_exception_handler(request: Request, exc: AppException):
