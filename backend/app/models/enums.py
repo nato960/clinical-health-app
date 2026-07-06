@@ -10,3 +10,8 @@ class Speciality(enum.Enum):
     NEUROLOGY = "NEUROLOGY"
     GENERAL_PRACTICE = "GENERAL_PRACTICE"
     UROLOGY = "UROLOGY"
+
+class CancellationReason(enum.Enum):
+    PATIENT_CANCELED = "PATIENT_CANCELED"
+    DOCTOR_CANCELED = "DOCTOR_CANCELED"
+    OTHER = "OTHER"

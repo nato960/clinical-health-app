@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from app.api.appointment import router as appointment_router
 from app.api.doctor import router as doctor_router
 from app.api.health import router as health_router
 from app.api.patient import router as patient_router
@@ -29,6 +30,7 @@ app = FastAPI(
 app.include_router(health_router)
 app.include_router(doctor_router, prefix="/api")
 app.include_router(patient_router, prefix="/api")
+app.include_router(appointment_router, prefix="/api")
 
 @app.exception_handler(AppException)
 async def app_exception_handler(request: Request, exc: AppException):

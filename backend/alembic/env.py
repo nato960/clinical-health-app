@@ -8,7 +8,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.core.database import Base
-from app.models import doctor, address, patient
+from app.models import doctor, address, patient, appointment
 
 load_dotenv()
 
