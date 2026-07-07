@@ -16,6 +16,7 @@ dependencies = [
     "pydantic-settings==2.14.2",
     "python-dotenv==1.2.2",
     "psycopg2-binary==2.9.12",
+    "firebase-admin==7.4.0",
 ]
 
 [tool.setuptools.packages.find]

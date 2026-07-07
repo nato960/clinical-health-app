@@ -40,3 +40,5 @@ benchmark/
 # OS
 .DS_Store
 Thumbs.db
+
+firebase-credentials*.json

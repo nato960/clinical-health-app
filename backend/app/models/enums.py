@@ -15,3 +15,11 @@ class CancellationReason(enum.Enum):
     PATIENT_CANCELED = "PATIENT_CANCELED"
     DOCTOR_CANCELED = "DOCTOR_CANCELED"
     OTHER = "OTHER"
+
+class Sector(enum.Enum):
+    RECEPTION = "RECEPTION"
+    FINANCE = "FINANCE"
+    MANAGEMENT = "MANAGEMENT"
+    IT = "IT"
+    OTHER = "OTHER"
+    

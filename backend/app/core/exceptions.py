@@ -18,3 +18,11 @@ class BusinessException(AppException):
     def __init__(self, message: str):
         super().__init__(status_code=400, message=message)
         
+
+class UnauthorizedException(AppException):
+    def __init__(self, message: str = "Invalid or expired authentication token"):
+        super().__init__(status_code=401, message=message)
+
+class ForbiddenException():
+    def __init__(self, message: str = "You do not have permission to perform this action"):
+        super().__init__(status_code=403, message=message)
