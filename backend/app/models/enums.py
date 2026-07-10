@@ -22,4 +22,9 @@ class Sector(enum.Enum):
     MANAGEMENT = "MANAGEMENT"
     IT = "IT"
     OTHER = "OTHER"
-    
+
+class UserRole(enum.Enum):
+    ADMIN = "ADMIN"
+    USER_ADMIN = "USER_ADMIN"
+    USER_DOCTOR = "USER_DOCTOR"
+    USER_PATIENT = "USER_PATIENT"
