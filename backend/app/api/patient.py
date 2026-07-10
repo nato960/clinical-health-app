@@ -2,13 +2,19 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, status
 
+from app.core.security import require_roles
+from app.models.enums import UserRole
 from app.schemas.patient_schema import PatientCreate, PatientPatch, PatientResponse
 from app.services.patient_service import PatientService, get_patient_service
 from app.services.patient_service import PATIENTS_LIST_MAX_LIMIT
 from app.schemas.shared import PaginatedResponse
 
 
-router = APIRouter(prefix="/patients", tags=["Patients"])
+router = APIRouter(
+    prefix="/patients",
+    tags=["Patients"],
+    dependencies=[Depends(require_roles(UserRole.ADMIN, UserRole.USER_ADMIN))],
+)
 
 @router.get("/", response_model=PaginatedResponse[PatientResponse], status_code=status.HTTP_200_OK)
 async def list_patients(

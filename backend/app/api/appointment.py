@@ -2,6 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, status
 
+from app.core.security import get_current_user
 from app.schemas.appointment_schema import (
     AppointmentCancel,
     AppointmentReschedule,
@@ -15,7 +16,11 @@ from app.services.appointment_service import (
     get_appointment_service,
 )
 
-router = APIRouter(prefix="/appointments", tags=["Appointments"])
+router = APIRouter(
+    prefix="/appointments",
+    tags=["Appointments"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get("/", response_model=PaginatedResponse[AppointmentResponse], status_code=status.HTTP_200_OK)

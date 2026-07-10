@@ -2,14 +2,19 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, status
 
+from app.core.security import require_roles
 from app.schemas.staff_schema import StaffCreate, StaffPatch, StaffResponse
 from app.services.staff_service import StaffService, get_staff_service
 from app.services.staff_service import STAFF_LIST_MAX_LIMIT
-from app.models.enums import Sector
+from app.models.enums import Sector, UserRole
 from app.schemas.shared import PaginatedResponse
 
 
-router = APIRouter(prefix="/staff", tags=["Staff"])
+router = APIRouter(
+    prefix="/staff",
+    tags=["Staff"],
+    dependencies=[Depends(require_roles(UserRole.ADMIN, UserRole.USER_ADMIN))],
+)
 
 @router.get("/", response_model=PaginatedResponse[StaffResponse], status_code=status.HTTP_200_OK)
 async def list_staff(

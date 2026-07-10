@@ -2,14 +2,19 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, status
 
+from app.core.security import require_roles
 from app.schemas.doctor_schema import DoctorCreate, DoctorPatch, DoctorResponse
 from app.services.doctor_service import DoctorService, get_doctor_service
 from app.services.doctor_service import DOCTORS_LIST_MAX_LIMIT
-from app.models.enums import Speciality
+from app.models.enums import Speciality, UserRole
 from app.schemas.shared import PaginatedResponse
 
 
-router = APIRouter(prefix="/doctors", tags=["Doctors"])
+router = APIRouter(
+    prefix="/doctors",
+    tags=["Doctors"],
+    dependencies=[Depends(require_roles(UserRole.ADMIN, UserRole.USER_ADMIN))],
+)
 
 @router.get("/", response_model=PaginatedResponse[DoctorResponse], status_code=status.HTTP_200_OK)
 async def list_doctors(
