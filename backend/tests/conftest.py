@@ -7,10 +7,19 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
 from app.main import app
 from app.core.database import get_db, Base
+from app.core.security import get_current_user
+from app.models.enums import UserRole
+from app.models.user import User
 
 TEST_DATABASE_URL = (
     "postgresql+asyncpg://postgres:postgres@localhost:5433/clinical_health_test_db"
 )
+
+
+def make_current_user_override(user: User):
+    async def override():
+        return user
+    return override
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -56,6 +65,9 @@ async def client(db_session):
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_current_user] = make_current_user_override(
+        User(id=1, firebase_uid="test-admin-uid", email="admin@test.com", role=UserRole.ADMIN)
+    )
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     )as ac:
