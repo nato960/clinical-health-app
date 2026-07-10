@@ -6,10 +6,12 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.api.appointment import router as appointment_router
+from app.api.auth import router as auth_router
 from app.api.doctor import router as doctor_router
 from app.api.health import router as health_router
 from app.api.patient import router as patient_router
 from app.api.staff import router as staff_router
+from app.api.user import router as user_router
 from app.core.exceptions import AppException
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -33,6 +35,8 @@ app.include_router(doctor_router, prefix="/api")
 app.include_router(patient_router, prefix="/api")
 app.include_router(appointment_router, prefix="/api")
 app.include_router(staff_router, prefix="/api")
+app.include_router(user_router, prefix="/api")
+app.include_router(auth_router, prefix="/api")
 
 @app.exception_handler(AppException)
 async def app_exception_handler(request: Request, exc: AppException):
