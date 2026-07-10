@@ -3,6 +3,12 @@ from datetime import date, timedelta
 from httpx import AsyncClient
 import pytest
 
+from app.core.security import get_current_user
+from app.main import app
+from app.models.enums import UserRole
+from app.models.user import User
+from tests.conftest import make_current_user_override
+
 def doctor_payload(**overrides):
     data = {
         "name": "Pedro Alves",
@@ -145,3 +151,23 @@ async def test_deactivate_already_inactive_returns_409(client: AsyncClient):
     await client.delete(f"{DOCTOR_URL}{doctor_id}")
     response = await client.delete(f"{DOCTOR_URL}{doctor_id}")
     assert response.status_code == 409
+
+
+# --- controle de acesso (ADMIN/USER_ADMIN only) ---
+
+@pytest.mark.integration
+async def test_non_admin_role_is_forbidden(client: AsyncClient):
+    app.dependency_overrides[get_current_user] = make_current_user_override(
+        User(id=2, firebase_uid="patient-uid", email="patient@test.com", role=UserRole.USER_PATIENT)
+    )
+    response = await client.get(DOCTOR_URL)
+    assert response.status_code == 403
+
+
+@pytest.mark.integration
+async def test_user_admin_role_is_allowed(client: AsyncClient):
+    app.dependency_overrides[get_current_user] = make_current_user_override(
+        User(id=3, firebase_uid="useradmin-uid", email="useradmin@test.com", role=UserRole.USER_ADMIN)
+    )
+    response = await client.get(DOCTOR_URL)
+    assert response.status_code == 200

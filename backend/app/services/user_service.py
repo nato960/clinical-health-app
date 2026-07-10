@@ -82,10 +82,10 @@ class UserService():
             await self.repo.delete(user)
 
             try:
-                auth.delete_user(user)
-            
+                auth.delete_user(firebase_user.uid)
+
             except Exception:
-                logger.error("Falha ao apagar conta Firebase órfã uid=%s", firebase_user.uid, exc_info=True)
+                logger.error("Failed to delete orphaned Firebase account uid=%s", firebase_user.uid, exc_info=True)
             raise
 
         logger.info("Patient self registered user_id=%s patient_id=%s", user.id, user.patient_id)
@@ -95,7 +95,7 @@ class UserService():
     async def create_user(self, creator: User, data: UserCreate) -> User:
         if data.role == UserRole.ADMIN and creator.role != UserRole.ADMIN:
             logger.warning("Forbidden: %s tried to create ADMIN", creator.id)
-            raise ForbiddenException("Only ADMIN can create another ADMIN.", creator.id)
+            raise ForbiddenException("Only ADMIN can create another ADMIN.")
         
         if data.role in (UserRole.ADMIN, UserRole.USER_ADMIN):
             if not data.staff_id:
